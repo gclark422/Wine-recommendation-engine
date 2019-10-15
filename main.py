@@ -18,12 +18,23 @@ reviews = wine_data['description']
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    tokens = porter_stem(del_punc(del_stop_word(tokenize(reviews))))
+    tokens = []
+    for d in reviews: 
+        #Makes each word in a review lowercase
+        d = d.lower()
+        # Breaks each review down into its individual terms and stores the
+        # words in a list where each word is an individual entry
+        # EXAMPLE: "hello world" ==> ["hello", "world"]
+        tokens.append( nltk.TweetTokenizer().tokenize( d ) )
+    # tokens = tokenize(reviews) # THIS IS THE PROBLEM
+    tokens = del_stop_word(tokens)
+    tokens = del_punc(tokens)
+    tokens = porter_stem(tokens)
     wines = ""
     if request.method=='POST':
         user_input = request.form['wine_desc']
         print(user_input, file=sys.stderr)
-        wines = get_recommended(tokens=tokens, user_input=user_input)
+        wines = get_recommended(tokens=tokens, user_input=user_input, min_points=90, max_price=60, variety='red')
         
     return render_template('index.html', tables=[wines], titles=['wines'])
 
@@ -226,6 +237,5 @@ def get_recommended(tokens, user_input, min_points=None, max_price=None, variety
     
     return wine_df.sort_values(by=['sims'], ascending=False).head(num_recs).to_html(classes='wines')
 
-    
 if __name__ == "__main__":
     app.run(debug=True)
