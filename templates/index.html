@@ -17,6 +17,22 @@
       <form role="form" method='POST' action='/'>
         <div class="form-group">
           <input type="text" name="wine_desc" class="form-control" id="desc-box" placeholder="Enter wine description..." style="max-width: 800px;" autofocus required>
+          <br>
+          <input type="number" name="min_points" class="form-control" id="points-box" placeholder="Enter wine minimum points..." style="max-width: 800px;" required>
+          <br>
+          <input type="number" name="max_price" class="form-control" id="price-box" placeholder="Enter wine max price..." style="max-width: 800px;" required>
+          <br>
+          <select name="variety" id="variety-box">
+            <option value="Any">Any</option>
+            <option value="Red">Red</option>
+            <option value="White">White</option>
+            <option value="Red Blend">Red Blend</option>
+            <option value="Rose">Rose</option>
+            <option value="Sparkling">Sparkling</option>
+            <option value="White Blend">white blend</option>
+            <option value="Dessert">Dessert</option>
+            <option value="Red-White Blend">Red-White Blend</option>
+          </select>
         </div>
         <button type="submit" class="btn btn-default">Submit</button>
       </form>

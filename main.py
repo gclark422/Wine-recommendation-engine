@@ -14,10 +14,14 @@ import numpy
 app = Flask(__name__)
 
 wine_data = pd.read_csv(r'./data/cleaned_wine_data.csv', encoding='latin1')
+wine_data = wine_data.drop(['province', 'region_1', 'region_2'], axis='columns')
 reviews = wine_data['description']
+pd.set_option('display.max_colwidth', -1)
 
-@app.route("/", methods=['GET', 'POST'])
-def index():
+@app.before_first_request
+def initialize():
+    print("test", file=sys.stderr)
+    global tokens # this is jank, I know
     tokens = []
     for d in reviews: 
         #Makes each word in a review lowercase
@@ -30,12 +34,26 @@ def index():
     tokens = del_stop_word(tokens)
     tokens = del_punc(tokens)
     tokens = porter_stem(tokens)
+
+
+@app.route("/", methods=['GET', 'POST'])
+def index():
     wines = ""
     if request.method=='POST':
         user_input = request.form['wine_desc']
+        min_points = int(request.form['min_points'])
+        max_price = int(request.form['max_price'])
+        variety = str(request.form['variety'])
         print(user_input, file=sys.stderr)
-        wines = get_recommended(tokens=tokens, user_input=user_input, min_points=90, max_price=60, variety='red')
-        
+        print(min_points, file=sys.stderr)
+        print(max_price, file=sys.stderr)
+        print(variety, file=sys.stderr)
+
+        if variety.lower() != 'any':
+            wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=variety)
+        else:
+            print("In Any", file=sys.stderr)
+            wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=None)
     return render_template('index.html', tables=[wines], titles=['wines'])
 
 def tokenize(term_vector):
