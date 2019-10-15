@@ -2,6 +2,7 @@ from flask import Flask
 from flask import request
 from flask import render_template
 from collections import Counter 
+import sys
 import pandas as pd
 import gensim
 import nltk
@@ -17,11 +18,14 @@ reviews = wine_data['description']
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    user_input = ""
+    tokens = porter_stem(del_punc(del_stop_word(tokenize(reviews))))
+    wines = ""
     if request.method=='POST':
         user_input = request.form['wine_desc']
+        print(user_input, file=sys.stderr)
+        wines = get_recommended(tokens=tokens, user_input=user_input)
         
-    return render_template('index.html', wines=user_input)
+    return render_template('index.html', tables=[wines], titles=['wines'])
 
 def tokenize(term_vector):
     """ tokenizes a given term vector
@@ -71,6 +75,14 @@ def del_stop_word(tokens):
     return tokens
 
 def del_punc(tokens): 
+    """ Deletes punctuation
+
+        Args:
+            tokens(list) - list of lists with punctuation to be removed
+
+        Returns:
+            tokens(list) - List of tokens without punctuation
+    """
     punc = re.compile( '[%s]' % re.escape( string.punctuation ) )
     no_punc = []
 
@@ -92,6 +104,14 @@ def del_punc(tokens):
     return tokens
 
 def porter_stem(tokens): 
+    """ Performs porter stemming on given tokens
+
+        Args:
+            tokens(list) - list of lists to be porter stemmed
+
+        Returns:
+            tokens(list) - porter stemmed list of lists
+    """
     
     porter = nltk.stem.porter.PorterStemmer()
 
@@ -101,7 +121,20 @@ def porter_stem(tokens):
     
     return tokens
 
-def get_recommended(tokens, winedata=None, min_points=None, max_price=None, variety=None, num_recs = 5): 
+def get_recommended(tokens, user_input, min_points=None, max_price=None, variety=None, num_recs = 5): 
+    """ Gets the recommended wines based off of user input
+
+        Args:
+            tokens(list) - The tokenized raw data
+            user_input(String) - The users wine description
+            min_points(int) - (Optional) The maximum number of points of the wines to return
+            max_price(float) - (Optional) The max price of wines to return
+            variety(String) - (Optional) The variety of the wine
+            num_recs(int) - Number of wines to display (Defualt = 5)
+
+        Returns:
+            (dataframe) - Top 5 recommendations
+    """
     ###  Convert term vectors into gensim dictionary to create the 
     ### Term Frequency–Inverse Document Frequency (TF-IDF) Matrix
     ### Reference https://www.csc2.ncsu.edu/faculty/healey/msa/text/ for more information regarding
@@ -112,7 +145,7 @@ def get_recommended(tokens, winedata=None, min_points=None, max_price=None, vari
     # The ID's will be used in the next step
     
     ### Process the user input:
-    new_review = [[input(" What type of wine are you looking for? ")]]
+    new_review = [[user_input]]
     
     new_review = tokenize(new_review)
     
@@ -191,7 +224,7 @@ def get_recommended(tokens, winedata=None, min_points=None, max_price=None, vari
     #merge similaries with original dataset to display recommended wines
     wine_df['sims'] = sims[:-1]
     
-    return wine_df.sort_values(by=['sims'], ascending=False).head(num_recs)
+    return wine_df.sort_values(by=['sims'], ascending=False).head(num_recs).to_html(classes='wines')
 
     
 if __name__ == "__main__":
