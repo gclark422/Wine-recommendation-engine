@@ -20,6 +20,7 @@ def index():
     user_input = ""
     if request.method=='POST':
         user_input = request.form['wine_desc']
+        
     return render_template('index.html', wines=user_input)
 
 def tokenize(term_vector):
