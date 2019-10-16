@@ -20,8 +20,7 @@ pd.set_option('display.max_colwidth', -1)
 
 @app.before_first_request
 def initialize():
-    print("test", file=sys.stderr)
-    global tokens # this is jank, I know
+    global tokens # this is jank, I know. I'll fix this later but it works for now
     tokens = []
     for d in reviews: 
         #Makes each word in a review lowercase
@@ -30,7 +29,6 @@ def initialize():
         # words in a list where each word is an individual entry
         # EXAMPLE: "hello world" ==> ["hello", "world"]
         tokens.append( nltk.TweetTokenizer().tokenize( d ) )
-    # tokens = tokenize(reviews) # THIS IS THE PROBLEM
     tokens = del_stop_word(tokens)
     tokens = del_punc(tokens)
     tokens = porter_stem(tokens)
@@ -44,16 +42,13 @@ def index():
         min_points = int(request.form['min_points'])
         max_price = int(request.form['max_price'])
         variety = str(request.form['variety'])
-        print(user_input, file=sys.stderr)
-        print(min_points, file=sys.stderr)
-        print(max_price, file=sys.stderr)
-        print(variety, file=sys.stderr)
 
         if variety.lower() != 'any':
             wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=variety)
         else:
             print("In Any", file=sys.stderr)
             wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=None)
+
     return render_template('index.html', tables=[wines], titles=['wines'])
 
 def tokenize(term_vector):
