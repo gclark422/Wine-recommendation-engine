@@ -46,10 +46,13 @@ def index():
         if variety.lower() != 'any':
             wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=variety)
         else:
-            print("In Any", file=sys.stderr)
             wines = get_recommended(tokens=tokens, user_input=user_input, min_points=min_points, max_price=max_price, variety=None)
 
     return render_template('index.html', tables=[wines], titles=['wines'])
+
+@app.route("/about/")
+def about():
+    return render_template('about.html')
 
 def tokenize(term_vector):
     """ tokenizes a given term vector

@@ -3,8 +3,10 @@
   <head>
     <title>Wine Recommendation Engine</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='sidebar.js') }}"></script>
     <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
     <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <style>
       .container {
         max-width: 1000px;
@@ -12,8 +14,23 @@
     </style>
   </head>
   <body>
+    <div class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none" id="mySidebar">
+        <button class="w3-bar-item w3-button w3-large" onclick="close_sidebar()">Close &times;</button>
+        <a href="{{ url_for('index') }}" class="w3-bar-item w3-button">Home</a>
+        <a href="{{ url_for('about') }}" class="w3-bar-item w3-button">About</a>
+      </div>
+  
+      <div id="main">
+  
+      <div class="w3-blue">
+        <button id="openNav" class="w3-button w3-blue w3-xlarge" onclick="open_sidebar()">&#9776;</button>
+        <div class="w3-container">
+          <h1>Wine Recommendation Engine</h1>
+        </div>
+      </div>
+
     <div class="container">
-      <h1>Wine Recommendation Engine</h1>
+      <br>
       <form role="form" method='POST' action='/'>
         <div class="form-group">
           <input type="text" name="wine_desc" class="form-control" id="desc-box" placeholder="Enter wine description..." style="max-width: 800px;" autofocus required>

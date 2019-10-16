@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>About</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="{{ url_for('static', filename='sidebar.js') }}"></script>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <style>
+      .container {
+        max-width: 1000px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="w3-sidebar w3-bar-block w3-card w3-animate-left" style="display:none" id="mySidebar">
+            <button class="w3-bar-item w3-button w3-large" onclick="close_sidebar()">Close &times;</button>
+            <a href="{{ url_for('index') }}" class="w3-bar-item w3-button">Home</a>
+            <a href="{{ url_for('about') }}" class="w3-bar-item w3-button">About</a>
+            </div>
+        
+            <div id="main">
+        
+            <div class="w3-blue">
+            <button id="openNav" class="w3-button w3-blue w3-xlarge" onclick="open_sidebar()">&#9776;</button>
+            <div class="w3-container">
+                <h1>About</h1>
+            </div>
+            </div>
+      <h2 align='center'><a href="https://github.com/gclark422/Wine-recommendation-engine">https://github.com/gclark422/Wine-recommendation-engine</a></h2>
+    </div>
+    <script src="//code.jquery.com/jquery-2.2.1.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  </body>
+</html>
