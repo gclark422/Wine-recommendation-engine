@@ -217,7 +217,6 @@ def get_recommended(tokens, user_input, min_points=None, max_price=None, variety
 
     dict = gensim.corpora.Dictionary( input_tokens )
 
-
     corp = [ ]
     for i in range( 0, len( input_tokens ) ):
 
