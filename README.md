@@ -11,7 +11,7 @@ A wine recommendation engine devloped by Grant Clark, Andrew Francis, and Cather
  ## Setup
 - Create a virtual environment and clone the repo
 ```
-$ virtualenv -p /usr/bin/python3.6 venv
+$ virtualenv -p /usr/bin/python3.7 venv
 $ source venv/bin/activate
 ```
 --- OR ---
