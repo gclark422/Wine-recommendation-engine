@@ -17,7 +17,7 @@ $ source venv/bin/activate
 --- OR ---
 ```
 $ conda create -n env python=3.7.3 anaconda
-$ conda activate env
+$ source activate env
 ```
 --- THEN ---
 ```
