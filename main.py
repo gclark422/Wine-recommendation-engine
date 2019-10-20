@@ -28,7 +28,7 @@ def initialize():
         # Breaks each review down into its individual terms and stores the
         # words in a list where each word is an individual entry
         # EXAMPLE: "hello world" ==> ["hello", "world"]
-        tokens.append( nltk.TweetTokenizer().tokenize( d ) )
+        tokens.append( nltk.TweetTokenizer().tokenize(d))
     tokens = del_stop_word(tokens)
     tokens = del_punc(tokens)
     tokens = porter_stem(tokens)
@@ -63,7 +63,7 @@ def tokenize(term_vector):
         Returns:
             term_tokens(list) - a list of the tokens
     """
-    term_tokens = [ ]
+    term_tokens = []
     
     for d in term_vector:
 
@@ -73,7 +73,7 @@ def tokenize(term_vector):
         # Breaks each review down into its individual terms and stores the
         # words in a list where each word is an individual entry
         # EXAMPLE: "hello world" ==> ["hello", "world"]
-        term_tokens.append( nltk.TweetTokenizer().tokenize( d ) )
+        term_tokens.append( nltk.TweetTokenizer().tokenize(d))
         
     return term_tokens
 
@@ -86,19 +86,19 @@ def del_stop_word(tokens):
         Returns:
             tokens(list) - List of lists with stop words removed
     """
-    stop_words = nltk.corpus.stopwords.words( 'english' )
+    stop_words = nltk.corpus.stopwords.words('english')
 
     # Take each tokenized wine review and remove stop words (i.e. only, own, don't, etc)
-    for i in range( 0, len( tokens ) ):
-        term_list2 = [ ]
+    for i in range(0, len(tokens)):
+        term_list2 = []
 
         #Append terms that are not in stop word library into a new wine review vector
         for term in tokens[ i ]:
             if term not in stop_words:
-                term_list2.append( term )
+                term_list2.append(term)
 
         #Replace the original wine review with the new wine review that doesn't contain stop words
-        tokens[ i ] = term_list2
+        tokens[i] = term_list2
     return tokens
 
 def del_punc(tokens): 
@@ -110,17 +110,17 @@ def del_punc(tokens):
         Returns:
             tokens(list) - List of tokens without punctuation
     """
-    punc = re.compile( '[%s]' % re.escape( string.punctuation ) )
+    punc = re.compile('[%s]' % re.escape(string.punctuation))
     no_punc = []
 
-    for i in range(0, len( tokens )):
+    for i in range(0, len(tokens)):
 
         no_punc = []
 
         #Checks each term in a review and replaces any punctuation with nothing
         #EXAMPLE: Berry-Flavored ==> BerryFlavored
         for term in tokens[ i ]: 
-            term = punc.sub( '', term )
+            term = punc.sub('', term)
 
             #Removes a few lingering characters not contained in the puncuation list
             if term != '' and term !='—' and term !='—' and term !='–':
@@ -142,9 +142,9 @@ def porter_stem(tokens):
     
     porter = nltk.stem.porter.PorterStemmer()
 
-    for i in range( 0, len( tokens ) ):
-        for j in range( 0, len( tokens[ i ] ) ):
-            tokens[ i ][ j ] = porter.stem( tokens[ i ][ j ] )
+    for i in range(0, len(tokens)):
+        for j in range(0, len(tokens[i])):
+            tokens[i][j] = porter.stem(tokens[i][j])
     
     return tokens
 
@@ -152,12 +152,12 @@ def get_recommended(tokens, user_input, min_points=None, max_price=None, variety
     """ Gets the recommended wines based off of user input
 
         Args:
-            tokens(list) - The tokenized raw data
+            tokens(list)       - The tokenized raw data
             user_input(String) - The users wine description
-            min_points(int) - (Optional) The maximum number of points of the wines to return
-            max_price(float) - (Optional) The max price of wines to return
-            variety(String) - (Optional) The variety of the wine
-            num_recs(int) - Number of wines to display (Defualt = 5)
+            min_points(int)    - (Optional) The maximum number of points of the wines to return
+            max_price(float)   - (Optional) The max price of wines to return
+            variety(String)    - (Optional) The variety of the wine
+            num_recs(int)      - Number of wines to display (Defualt = 5)
 
         Returns:
             (dataframe) - Top 5 recommendations
@@ -218,34 +218,34 @@ def get_recommended(tokens, user_input, min_points=None, max_price=None, variety
     
     input_tokens.append(new_review[0])
 
-    dict = gensim.corpora.Dictionary( input_tokens )
+    dict = gensim.corpora.Dictionary(input_tokens)
 
-    corp = [ ]
-    for i in range( 0, len( input_tokens ) ):
+    corp = []
+    for i in range(0, len(input_tokens)):
 
         # For each term vector this will match each term with its term ID and give the count of that term
         # EXAMPLE: "to" has ID=4 and "chicken" has ID=8. The sentence "chicken to chicken to to" becomes
         # [(4, 3), (8, 1)]
-        corp.append( dict.doc2bow( input_tokens[ i ] ) )
+        corp.append(dict.doc2bow( input_tokens[i]))
 
     #  Create TFIDF vectors based on term vectors bag-of-word corpora
     # This takes the corpa made in the previous step and calculates the 
     # TFIDF for each term in each review
-    tfidf_model = gensim.models.TfidfModel( corp )
+    tfidf_model = gensim.models.TfidfModel(corp)
 
-    tfidf = [ ]
-    for i in range( 0, len( corp ) ):
-        tfidf.append( tfidf_model[ corp[ i ] ] )
+    tfidf = []
+    for i in range(0, len(corp)):
+        tfidf.append(tfidf_model[corp[i]])
 
     ###  Create pairwise document similarity index
-    n = len( dict )
+    n = len(dict)
 
     #Index will contain all of the document to document similarities
     #Similarity is calculated by calculating cosine similarity
-    index = gensim.similarities.SparseMatrixSimilarity( tfidf_model[ corp ], num_features = n )
+    index = gensim.similarities.SparseMatrixSimilarity(tfidf_model[corp], num_features = n)
     
     #Get the similarity values from the user input vector
-    sims = index[ tfidf_model[ corp[ -1 ] ] ]
+    sims = index[ tfidf_model[corp[-1]]]
     
     #merge similaries with original dataset to display recommended wines
     wine_df['sims'] = sims[:-1]
