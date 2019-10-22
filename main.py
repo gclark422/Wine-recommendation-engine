@@ -253,4 +253,4 @@ def get_recommended(tokens, user_input, min_points=None, max_price=None, variety
     return wine_df.sort_values(by=['sims'], ascending=False).head(num_recs).to_html(classes='wines')
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=False)
