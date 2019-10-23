@@ -14,12 +14,12 @@ import numpy
 app = Flask(__name__)
 
 wine_data = pd.read_csv(r'./data/cleaned_wine_data.csv', encoding='latin1')
-wine_data = wine_data.drop(['province', 'region_1', 'region_2'], axis='columns')
 reviews = wine_data['description']
 pd.set_option('display.max_colwidth', -1)
 
 @app.before_first_request
 def initialize():
+    """ Performs preprocessing on the wine_data table"""
     global tokens # this is jank, I know. I'll fix this later but it works for now
     tokens = []
     for d in reviews: 
