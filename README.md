@@ -34,4 +34,3 @@ $ python main.py
 ```
 - Open localhost:5000 in your favorite browser (127.0.0.1:5000)
 - The site takes several seconds(up to a minute) to perform all the preprocessing so just let it load
-haha
